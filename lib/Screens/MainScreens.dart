@@ -1,5 +1,6 @@
 import 'dart:convert';
-
+import '/main.dart';
+import '/../Constant/const.dart';
 import '/../Models/Motivasi_Model.dart';
 import '/../Screens/EditPage.dart';
 import 'package:flutter/material.dart';
@@ -10,28 +11,37 @@ import 'package:another_flushbar/flushbar.dart';
 
 class MainScreens extends StatefulWidget {
   final String? nama;
-  const MainScreens({Key? key, this.nama}) : super(key: key);
+  final String? iduser;
+
+const MainScreens({super.key, this.nama, this.iduser});
 
   @override
   _MainScreensState createState() => _MainScreensState();
 }
 
 class _MainScreensState extends State<MainScreens> {
-  String baseurl =
-      "https://8667-182-2-137-85.ngrok-free.app/vigenesia"; // ganti dengan ip address kamu / tempat kamu menyimpan backend
+  String baseurl = url;
+      // ganti dengan ip address kamu / tempat kamu menyimpan backend
   String? id;
   var dio = Dio();
+  List<MotivasiModel> ass = [];
   TextEditingController titleController = TextEditingController();
 
   Future<dynamic> sendMotivasi(String isi) async {
     Map<String, dynamic> body = {
       "isi_motivasi": isi,
+      "iduser": widget.iduser,
     };
-
+    print("test${widget.iduser}");
     try {
-      Response response =
-          await dio.post("$baseurl/api/dev/POSTmotivasi/", data: body);
-
+      final response = await dio.post(
+        "$baseurl/api/dev/POSTmotivasi/",
+        data: body,
+        options: Options(
+            followRedirects: false,
+            validateStatus: (status) => true,
+            contentType: Headers.formUrlEncodedContentType),
+      ); // Formatnya Harus Form Data
       print("Respon -> ${response.data} + ${response.statusCode}");
 
       return response;
@@ -60,7 +70,7 @@ class _MainScreensState extends State<MainScreens> {
     dynamic data = {
       "id": id,
     };
-    var response = await dio.delete('$baseurl/aci/api/dev/DELETEmotivasi',
+    var response = await dio.delete('$baseurl/api/dev/DELETEmotivasi',
         data: data,
         options: Options(
             contentType: Headers.formUrlEncodedContentType,
@@ -87,9 +97,17 @@ class _MainScreensState extends State<MainScreens> {
     _getData();
   }
 
+  String? trigger;
+  String? triggeruser;
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      themeMode: ThemeMode.light,
+      theme: GlobalThemData.lightThemeData,
+      darkTheme: GlobalThemData.darkThemeData,
+      home: Scaffold(
       body: SingleChildScrollView(
         // <-- Berfungsi Untuk  Bisa Scroll
         child: SafeArea(
@@ -98,46 +116,45 @@ class _MainScreensState extends State<MainScreens> {
             child: Padding(
               padding: const EdgeInsets.only(left: 30.0, right: 30.0),
               child: Column(
-                  mainAxisAlignment: MainAxisAlignment
-                      .center, // <-- Berfungsi untuk  atur nilai X jadi tengah
-                  children: [
-                    SizedBox(
-                      height: 40,
+                  mainAxisAlignment: MainAxisAlignment.center, // <-- Berfungsi untuk  atur nilai X jadi tengah
+                  children: [const SizedBox(height: 40,
                     ),
-
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
                           "Hallo  ${widget.nama}",
-                          style: TextStyle(
-                              fontSize: 22, fontWeight: FontWeight.w500),
+                          style: const TextStyle(
+                              fontSize: 25, fontWeight: FontWeight.w700),
                         ),
                         TextButton(
-                            child: Icon(Icons.logout),
+                            child: const Icon(Icons.logout),
                             onPressed: () {
                               Navigator.pop(context);
                               Navigator.push(
                                   context,
-                                  new MaterialPageRoute(
+                                  MaterialPageRoute(
                                       builder: (BuildContext context) =>
-                                          new Login()));
+                                          const Login()));
                             })
                       ],
                     ),
 
-                    SizedBox(height: 20), // <-- Kasih Jarak Tinggi : 50px
+                    const SizedBox(height: 30), // <-- Kasih Jarak Tinggi : 50px
                     FormBuilderTextField(
                       controller: isiController,
                       name: "isi_motivasi",
-                      decoration: InputDecoration(
-                        border: OutlineInputBorder(),
+                      decoration: const InputDecoration(
+                        border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
+                        labelText: 'Isi Motivasi Disini',
+                        labelStyle: TextStyle(fontSize: 14),
                         contentPadding: EdgeInsets.only(left: 10),
                       ),
                     ),
-                    Container(
-                      width: MediaQuery.of(context).size.width,
-                      child: ElevatedButton(
+                    const SizedBox(height: 30),
+                    SizedBox(
+                      width: MediaQuery.of(context).size.width / 3.2,
+                      child: FilledButton.tonal(
                           onPressed: () async {
                             await sendMotivasi(isiController.text.toString())
                                 .then((value) => {
@@ -145,7 +162,7 @@ class _MainScreensState extends State<MainScreens> {
                                         {
                                           Flushbar(
                                             message: "Berhasil Submit",
-                                            duration: Duration(seconds: 2),
+                                            duration: const Duration(seconds: 2),
                                             backgroundColor: Colors.greenAccent,
                                             flushbarPosition:
                                                 FlushbarPosition.TOP,
@@ -156,73 +173,76 @@ class _MainScreensState extends State<MainScreens> {
                             _getData();
                             print("Sukses");
                           },
-                          child: Text("Submit")),
+                          child: const Text("Submit",
+                          style: TextStyle(fontWeight: FontWeight.bold,fontSize: 20,height: 2.2,color: Color.fromARGB(255, 255, 249, 248)))),
                     ),
 
-                    SizedBox(
+                    const SizedBox(
                       height: 40,
                     ),
                     TextButton(
-                      child: Icon(Icons.refresh),
+                      child: const Icon(Icons.refresh),
                       onPressed: () {
                         _getData();
                       },
                     ),
                     FutureBuilder(
-                        future: getData(),
-                        builder: (BuildContext context,
-                            AsyncSnapshot<List<MotivasiModel>> snapshot) {
+                      future: getData(),
+                      builder: (BuildContext context,
+                          AsyncSnapshot<List<MotivasiModel>> snapshot) {
                           if (snapshot.hasData) {
                             return Column(
                               children: [
                                 for (var item in snapshot.data!)
                                   Container(
-                                    width: MediaQuery.of(context).size.width,
+                                    height: 60,
+                                    width: MediaQuery.of(context).size.width ,
                                     child: ListView(
                                       shrinkWrap: true,
                                       children: [
                                         Expanded(
+                                          flex: 1,
                                           child: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
+                                            mainAxisAlignment:MainAxisAlignment.spaceBetween,
+                                            crossAxisAlignment: CrossAxisAlignment.start,
                                             children: [
-                                              Text(item.isiMotivasi.toString()),
+                                              Text(item.isiMotivasi.toString(),
+                                                    style: TextStyle(fontSize:10,),
+                                                    overflow:TextOverflow.ellipsis,
+                                                    maxLines: 2,
+                                                    softWrap: true,),
                                               Row(
                                                 children: [
                                                   TextButton(
-                                                    child: Icon(Icons.settings),
+                                                    child: const Icon(Icons.settings),
                                                     onPressed: () {
                                                       String id;
-                                                      String isi_motivasi;
+                                                      String isiMotivasi;
                                                       Navigator.push(
                                                           context,
                                                           MaterialPageRoute(
-                                                            builder: (BuildContext
-                                                                    context) =>
+                                                            builder: (BuildContext context) =>
                                                                 EditPage(
                                                                     id: item.id,
-                                                                    isi_motivasi:
-                                                                        item.isiMotivasi),
+                                                                    isi_motivasi:item.isiMotivasi),
                                                           ));
                                                     },
                                                   ),
                                                   TextButton(
-                                                    child: Icon(Icons.delete),
+                                                    child: const Icon(Icons.delete),
                                                     onPressed: () {
                                                       deletePost(item.id!)
                                                           .then((value) => {
-                                                                if (value !=
-                                                                    null)
+                                                                if (value !=null)
                                                                   {
                                                                     Flushbar(
                                                                       message:
                                                                           "Berhasil Delete",
-                                                                      duration: Duration(
+                                                                      duration: const Duration(
                                                                           seconds:
                                                                               2),
                                                                       backgroundColor:
-                                                                          Colors
-                                                                              .redAccent,
+                                                                           const Color.fromARGB(255, 255, 117, 82),
                                                                       flushbarPosition:
                                                                           FlushbarPosition
                                                                               .TOP,
@@ -231,6 +251,7 @@ class _MainScreensState extends State<MainScreens> {
                                                                   }
                                                               });
                                                       _getData();
+
                                                     },
                                                   )
                                                 ],
@@ -245,9 +266,9 @@ class _MainScreensState extends State<MainScreens> {
                             );
                           } else if (snapshot.hasData &&
                               snapshot.data!.isEmpty) {
-                            return Text("No Data");
+                            return const Text("No Data");
                           } else {
-                            return CircularProgressIndicator();
+                            return const CircularProgressIndicator();
                           }
                         })
                   ]),
@@ -255,6 +276,6 @@ class _MainScreensState extends State<MainScreens> {
           ),
         ),
       ),
-    );
+    ));
   }
 }

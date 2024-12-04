@@ -1,11 +1,15 @@
-import '/../Constant/const.dart';
 import 'package:flutter/material.dart';
+import 'Login.dart';
+import 'package:simple_gradient_text/simple_gradient_text.dart';
 import 'package:another_flushbar/flushbar.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:dio/dio.dart';
+import '/../Constant/const.dart';
+import '/main.dart';
 
 class Register extends StatefulWidget {
-  const Register({Key? key}) : super(key: key);
+  const Register({super.key});
 
   @override
   _RegisterState createState() => _RegisterState();
@@ -14,13 +18,13 @@ class Register extends StatefulWidget {
 class _RegisterState extends State<Register> {
   // Ganti Base URL
 
-  String baseurl =
-      "https://8667-182-2-137-85.ngrok-free.app/vigenesia"; // ganti dengan ip address kamu / tempat kamu menyimpan backend
+  String baseurl = url;
+      //"https://429f-175-158-63-74.ngrok-free.app/vigenesia"; // ganti dengan ip address kamu / tempat kamu menyimpan backend
 
   Future postRegister(
       String nama, String profesi, String email, String password) async {
     var dio = Dio();
-
+    
     dynamic data = {
       "nama": nama,
       "profesi": profesi,
@@ -49,48 +53,58 @@ class _RegisterState extends State<Register> {
   TextEditingController passwordController = TextEditingController();
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      themeMode: ThemeMode.light,
+      theme: GlobalThemData.lightThemeData,
+      darkTheme: GlobalThemData.darkThemeData,
+      home: Scaffold(
       body: SingleChildScrollView(
         child: SafeArea(
           child: Center(
-            child: Container(
-              width: MediaQuery.of(context).size.width / 1.3,
+            child: SizedBox(
+              width: MediaQuery.of(context).size.width / 1.5,
               height: MediaQuery.of(context).size.height,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text(
+                  GradientText(
                     "Register Your Account",
-                    style: TextStyle(fontSize: 22, fontWeight: FontWeight.w500),
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(fontSize: 30, fontWeight: FontWeight.w700),
+                    colors: const [ // <- atur warna gradienttext
+                  Color.fromARGB(255, 255, 48, 33),
+                  Color.fromARGB(255, 255, 223, 43),
+                    ],
                   ),
-                  SizedBox(height: 50),
+                  const SizedBox(height: 50),
                   FormBuilderTextField(
                     name: "name",
                     controller: nameController,
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                         contentPadding: EdgeInsets.only(left: 10),
-                        border: OutlineInputBorder(),
+                        border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
                         labelText: "Nama"),
                   ),
-                  SizedBox(height: 20),
+                  const SizedBox(height: 20),
                   FormBuilderTextField(
                     name: "profesi",
                     controller: profesiController,
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                         contentPadding: EdgeInsets.only(left: 10),
-                        border: OutlineInputBorder(),
+                        border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
                         labelText: "Profesi"),
                   ),
-                  SizedBox(height: 20),
+                  const SizedBox(height: 20),
                   FormBuilderTextField(
                     name: "email",
                     controller: emailController,
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                         contentPadding: EdgeInsets.only(left: 10),
-                        border: OutlineInputBorder(),
+                        border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
                         labelText: "Email"),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 20,
                   ),
                   FormBuilderTextField(
@@ -98,18 +112,16 @@ class _RegisterState extends State<Register> {
                         true, // <-- Buat bikin setiap inputan jadi bintang " * "
                     name: "password",
                     controller: passwordController,
-
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                         contentPadding: EdgeInsets.only(left: 10),
-                        border: OutlineInputBorder(),
+                        border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
                         labelText: "Password"),
                   ),
-                  SizedBox(
-                    height: 30,
+                  const SizedBox(height: 30,
                   ),
-                  Container(
-                    width: MediaQuery.of(context).size.width,
-                    child: ElevatedButton(
+                  SizedBox(
+                    width: MediaQuery.of(context).size.width /3.2,
+                      child: FilledButton.tonal(
                         onPressed: () async {
                           await postRegister(
                                   nameController.text,
@@ -123,7 +135,7 @@ class _RegisterState extends State<Register> {
                                           Navigator.pop(context);
                                           Flushbar(
                                             message: "Berhasil Registrasi",
-                                            duration: Duration(seconds: 2),
+                                            duration: const Duration(seconds: 2),
                                             backgroundColor: Colors.greenAccent,
                                             flushbarPosition:
                                                 FlushbarPosition.TOP,
@@ -135,22 +147,49 @@ class _RegisterState extends State<Register> {
                                         Flushbar(
                                           message:
                                               "Check Your Field Before Register",
-                                          duration: Duration(seconds: 5),
-                                          backgroundColor: Colors.redAccent,
+                                          duration: const Duration(seconds: 5),
+                                          backgroundColor: const Color.fromARGB(255, 255, 117, 82),
                                           flushbarPosition:
                                               FlushbarPosition.TOP,
                                         ).show(context)
                                       }
                                   });
                         },
-                        child: Text("Daftar")),
+                        child: const Text("Sign up", 
+                        style: TextStyle(fontWeight: FontWeight.bold,fontSize: 20,height: 2.2,color: Color.fromARGB(255, 255, 249, 248)))),
                   ),
+                  const SizedBox(height: 20),
+                  Text.rich(
+                            TextSpan(
+                              children: [
+                                const TextSpan(
+                                  text: 'have an account ? ',
+                                  //style: TextStyle(color: Color.fromARGB(136, 24, 24, 24)),
+                                ),
+                                TextSpan(
+                                    text: 'Sign in',
+                                    recognizer: TapGestureRecognizer()
+                                      ..onTap = () {
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder:
+                                                    (BuildContext context) =>
+                                                        const Login()));
+                                      },
+                                    style: const TextStyle(
+                                      fontWeight: FontWeight.w600,
+                                      decoration: TextDecoration.underline,
+                                      //color: Color.fromARGB(255, 255, 209, 81),
+                                    )),
+                              ],
+                            )),
                 ],
               ),
             ),
           ),
         ),
       ),
-    );
+    ));
   }
 }

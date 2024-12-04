@@ -35,7 +35,7 @@ class LoginModels {
 
 class Data {
   Data({
-    this.id,
+    this.iduser,
     this.nama,
     this.profesi,
     this.email,
@@ -46,7 +46,7 @@ class Data {
     this.modified,
   });
 
-  String? id;
+  String? iduser;
   String? nama;
   String? profesi;
   String? email;
@@ -57,7 +57,7 @@ class Data {
   String? modified;
 
   factory Data.fromJson(Map<String, dynamic> json) => Data(
-        id: json["id"],
+        iduser: json["iduser"],
         nama: json["nama"],
         profesi: json["profesi"],
         email: json["email"],
@@ -69,7 +69,7 @@ class Data {
       );
 
   Map<String, dynamic> toJson() => {
-        "id": id,
+        "iduser": iduser,
         "nama": nama,
         "profesi": profesi,
         "email": email,
