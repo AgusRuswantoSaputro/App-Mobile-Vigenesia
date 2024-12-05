@@ -1,6 +1,7 @@
 import 'dart:convert';
 import '/main.dart';
 import '/../Constant/const.dart';
+import 'package:provider/provider.dart';
 import '/../Models/Motivasi_Model.dart';
 import '/../Screens/EditPage.dart';
 import 'package:flutter/material.dart';
@@ -101,12 +102,14 @@ class _MainScreensState extends State<MainScreens> {
   String? triggeruser;
 
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      themeMode: ThemeMode.light,
-      theme: GlobalThemData.lightThemeData,
-      darkTheme: GlobalThemData.darkThemeData,
+Widget build(BuildContext context) {
+    return Consumer<ThemeNotifier>(
+      builder: (context, themeNotifier, child) {
+        return MaterialApp(
+        debugShowCheckedModeBanner: false,
+        theme: lightTheme,
+        darkTheme: darkTheme,
+        themeMode: themeNotifier.themeMode,
       home: Scaffold(
       body: SingleChildScrollView(
         // <-- Berfungsi Untuk  Bisa Scroll
@@ -114,21 +117,33 @@ class _MainScreensState extends State<MainScreens> {
           // < -- Biar Gak Keluar Area Screen HP
           child: Container(
             child: Padding(
-              padding: const EdgeInsets.only(left: 30.0, right: 30.0),
+              padding: const EdgeInsets.all(20),
               child: Column(
                   mainAxisAlignment: MainAxisAlignment.center, // <-- Berfungsi untuk  atur nilai X jadi tengah
-                  children: [const SizedBox(height: 40,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(   
+                      mainAxisAlignment: MainAxisAlignment.start,
                       children: [
+                        Expanded(child:
                         Text(
-                          "Hallo  ${widget.nama}",
+                          "Hallo ${widget.nama}",
                           style: const TextStyle(
-                              fontSize: 25, fontWeight: FontWeight.w700),
-                        ),
-                        TextButton(
-                            child: const Icon(Icons.logout),
+                          fontSize: 25, fontWeight: FontWeight.w700,
+                          overflow: TextOverflow.ellipsis),
+                        )),
+                        //Spacer(),
+                        IconButton(
+                          icon: const Icon(Icons.brightness_6),
+                          onPressed: () {
+                          ThemeNotifier themeNotifier = Provider.of<ThemeNotifier>(context, listen: false);
+                          if (themeNotifier.themeMode == ThemeMode.light) {
+                              themeNotifier.setTheme(ThemeMode.dark);
+                          } else {
+                          themeNotifier.setTheme(ThemeMode.light);
+                          }},
+                          ),
+                        IconButton(
+                            icon: const Icon(Icons.logout),
                             onPressed: () {
                               Navigator.pop(context);
                               Navigator.push(
@@ -136,11 +151,10 @@ class _MainScreensState extends State<MainScreens> {
                                   MaterialPageRoute(
                                       builder: (BuildContext context) =>
                                           const Login()));
-                            })
-                      ],
-                    ),
-
-                    const SizedBox(height: 30), // <-- Kasih Jarak Tinggi : 50px
+                            }),
+                          ],
+                          ),
+                    const SizedBox(height: 40), // <-- Kasih Jarak Tinggi : 50px
                     FormBuilderTextField(
                       controller: isiController,
                       name: "isi_motivasi",
@@ -148,10 +162,9 @@ class _MainScreensState extends State<MainScreens> {
                         border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
                         labelText: 'Isi Motivasi Disini',
                         labelStyle: TextStyle(fontSize: 14),
-                        contentPadding: EdgeInsets.only(left: 10),
                       ),
                     ),
-                    const SizedBox(height: 30),
+                    const SizedBox(height: 40),
                     SizedBox(
                       width: MediaQuery.of(context).size.width / 3.2,
                       child: FilledButton.tonal(
@@ -174,12 +187,11 @@ class _MainScreensState extends State<MainScreens> {
                             print("Sukses");
                           },
                           child: const Text("Submit",
-                          style: TextStyle(fontWeight: FontWeight.bold,fontSize: 20,height: 2.2,color: Color.fromARGB(255, 255, 249, 248)))),
+                          style: TextStyle(fontWeight: FontWeight.bold,fontSize: 20,height: 2.2))),
                     ),
 
-                    const SizedBox(
-                      height: 40,
-                    ),
+                    const SizedBox(height: 30,),
+
                     TextButton(
                       child: const Icon(Icons.refresh),
                       onPressed: () {
@@ -194,27 +206,30 @@ class _MainScreensState extends State<MainScreens> {
                             return Column(
                               children: [
                                 for (var item in snapshot.data!)
-                                  Container(
-                                    height: 60,
+                                  SizedBox(
+                                    height: MediaQuery.of(context).size.width / 7.0,
                                     width: MediaQuery.of(context).size.width ,
-                                    child: ListView(
-                                      shrinkWrap: true,
+                                    child: Card(
+                                      elevation: 0,
+                                      child: Padding(
+                                      padding: const EdgeInsets.only(left: 10),
+                                      child: Column(
                                       children: [
                                         Expanded(
-                                          flex: 1,
                                           child: Row(
                                             mainAxisAlignment:MainAxisAlignment.spaceBetween,
-                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            crossAxisAlignment: CrossAxisAlignment.center,
                                             children: [
+                                              Expanded(child :
                                               Text(item.isiMotivasi.toString(),
-                                                    style: TextStyle(fontSize:10,),
+                                                    style: const TextStyle(fontSize:14),
                                                     overflow:TextOverflow.ellipsis,
                                                     maxLines: 2,
-                                                    softWrap: true,),
+                                                    softWrap: true,)),
                                               Row(
                                                 children: [
-                                                  TextButton(
-                                                    child: const Icon(Icons.settings),
+                                                  IconButton(
+                                                    icon: const Icon(Icons.settings),
                                                     onPressed: () {
                                                       String id;
                                                       String isiMotivasi;
@@ -228,8 +243,8 @@ class _MainScreensState extends State<MainScreens> {
                                                           ));
                                                     },
                                                   ),
-                                                  TextButton(
-                                                    child: const Icon(Icons.delete),
+                                                  IconButton(
+                                                    icon: const Icon(Icons.delete),
                                                     onPressed: () {
                                                       deletePost(item.id!)
                                                           .then((value) => {
@@ -262,7 +277,7 @@ class _MainScreensState extends State<MainScreens> {
                                       ],
                                     ),
                                   ),
-                              ],
+                            ))],
                             );
                           } else if (snapshot.hasData &&
                               snapshot.data!.isEmpty) {
@@ -277,5 +292,6 @@ class _MainScreensState extends State<MainScreens> {
         ),
       ),
     ));
-  }
+  });
+}
 }

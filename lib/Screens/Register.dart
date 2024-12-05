@@ -6,7 +6,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:dio/dio.dart';
 import '/../Constant/const.dart';
-import '/main.dart';
+import 'package:provider/provider.dart';
 
 class Register extends StatefulWidget {
   const Register({super.key});
@@ -53,72 +53,87 @@ class _RegisterState extends State<Register> {
   TextEditingController passwordController = TextEditingController();
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      themeMode: ThemeMode.light,
-      theme: GlobalThemData.lightThemeData,
-      darkTheme: GlobalThemData.darkThemeData,
+    return Consumer<ThemeNotifier>(
+      builder: (context, themeNotifier, child) {
+        return MaterialApp(
+        debugShowCheckedModeBanner: false,
+        theme: lightTheme,
+        darkTheme: darkTheme,
+        themeMode: themeNotifier.themeMode,
       home: Scaffold(
       body: SingleChildScrollView(
         child: SafeArea(
           child: Center(
             child: SizedBox(
-              width: MediaQuery.of(context).size.width / 1.5,
+              //width: MediaQuery.of(context).size.width / 1.5,
               height: MediaQuery.of(context).size.height,
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.start,
+                //crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
-                  GradientText(
+                Align(
+                  alignment: Alignment.topRight,
+                child: IconButton(
+                padding: const EdgeInsets.all(20),
+                icon: const Icon(Icons.brightness_6),
+                onPressed: () {
+                ThemeNotifier themeNotifier = Provider.of<ThemeNotifier>(context, listen: false);
+                if (themeNotifier.themeMode == ThemeMode.light) {
+                    themeNotifier.setTheme(ThemeMode.dark);
+                } else {
+                    themeNotifier.setTheme(ThemeMode.light);
+                    }},),),
+                  const SizedBox(height: 40),             
+                   GradientText(
                     "Register Your Account",
-                    textAlign: TextAlign.center,
                     style: const TextStyle(fontSize: 30, fontWeight: FontWeight.w700),
                     colors: const [ // <- atur warna gradienttext
                   Color.fromARGB(255, 255, 48, 33),
                   Color.fromARGB(255, 255, 223, 43),
                     ],
                   ),
-                  const SizedBox(height: 50),
-                  FormBuilderTextField(
+                  const SizedBox(height: 60),
+                  SizedBox(width: MediaQuery.of(context).size.width / 1.5,
+                  child: FormBuilderTextField(
                     name: "name",
                     controller: nameController,
                     decoration: const InputDecoration(
                         contentPadding: EdgeInsets.only(left: 10),
                         border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
                         labelText: "Nama"),
-                  ),
+                  )),
                   const SizedBox(height: 20),
-                  FormBuilderTextField(
+                  SizedBox(width: MediaQuery.of(context).size.width / 1.5,
+                  child: FormBuilderTextField(
                     name: "profesi",
                     controller: profesiController,
                     decoration: const InputDecoration(
                         contentPadding: EdgeInsets.only(left: 10),
                         border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
                         labelText: "Profesi"),
-                  ),
+                  )),
                   const SizedBox(height: 20),
-                  FormBuilderTextField(
+                  SizedBox(width: MediaQuery.of(context).size.width / 1.5, height: 50,
+                  child: FormBuilderTextField(
                     name: "email",
                     controller: emailController,
                     decoration: const InputDecoration(
                         contentPadding: EdgeInsets.only(left: 10),
                         border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
                         labelText: "Email"),
-                  ),
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  FormBuilderTextField(
-                    obscureText:
-                        true, // <-- Buat bikin setiap inputan jadi bintang " * "
+                  )),
+                  const SizedBox(height: 20),
+                  SizedBox(width: MediaQuery.of(context).size.width / 1.5,
+                  child: FormBuilderTextField(
+                    obscureText: true, // <-- Buat bikin setiap inputan jadi bintang " * "
                     name: "password",
                     controller: passwordController,
                     decoration: const InputDecoration(
                         contentPadding: EdgeInsets.only(left: 10),
                         border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
                         labelText: "Password"),
-                  ),
-                  const SizedBox(height: 30,
-                  ),
+                  )),
+                  const SizedBox(height: 50),
                   SizedBox(
                     width: MediaQuery.of(context).size.width /3.2,
                       child: FilledButton.tonal(
@@ -156,7 +171,7 @@ class _RegisterState extends State<Register> {
                                   });
                         },
                         child: const Text("Sign up", 
-                        style: TextStyle(fontWeight: FontWeight.bold,fontSize: 20,height: 2.2,color: Color.fromARGB(255, 255, 249, 248)))),
+                        style: TextStyle(fontWeight: FontWeight.bold,fontSize: 20,height: 2.2))),
                   ),
                   const SizedBox(height: 20),
                   Text.rich(
@@ -184,12 +199,13 @@ class _RegisterState extends State<Register> {
                                     )),
                               ],
                             )),
-                ],
+              ],
               ),
             ),
           ),
         ),
       ),
     ));
-  }
+  });
+}
 }

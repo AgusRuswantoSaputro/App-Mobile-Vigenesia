@@ -8,7 +8,7 @@ import 'Register.dart';
 import 'package:flutter/gestures.dart';
 import '/../Constant/const.dart';
 import '/../Models/Login_Model.dart';
-import '/main.dart';
+import 'package:provider/provider.dart';
 
 class Login extends StatefulWidget {
   const Login({super.key});
@@ -53,22 +53,35 @@ class _LoginState extends State<Login> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      themeMode: ThemeMode.light,
-      theme: GlobalThemData.lightThemeData,
-      darkTheme: GlobalThemData.darkThemeData,
+    return Consumer<ThemeNotifier>(
+      builder: (context, themeNotifier, child) {
+        return MaterialApp(
+        debugShowCheckedModeBanner: false,
+        theme: lightTheme,
+        darkTheme: darkTheme,
+        themeMode: themeNotifier.themeMode,
         home: Scaffold(
-      body: SingleChildScrollView(
+        body: SingleChildScrollView(
         // <-- Berfungsi Untuk  Bisa Scroll
         child: SafeArea(
           // < -- Biar Gak Keluar Area Screen HP
           child: SizedBox(
             height: MediaQuery.of(context).size.height,
             child: Column(
-              
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [                
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                IconButton(
+                padding: const EdgeInsets.all(20),
+                icon: const Icon(Icons.brightness_6),
+                onPressed: () {
+                ThemeNotifier themeNotifier = Provider.of<ThemeNotifier>(context, listen: false);
+                if (themeNotifier.themeMode == ThemeMode.light) {
+                    themeNotifier.setTheme(ThemeMode.dark);
+                } else {
+                    themeNotifier.setTheme(ThemeMode.light);
+                    }},),        
+                const SizedBox(height: 80),
                 GradientText(
                   "Boost your mood with Vigenesia!",
                   textAlign: TextAlign.center,
@@ -79,7 +92,7 @@ class _LoginState extends State<Login> {
                     ],
                   maxLines: 2,
                 ),
-                const SizedBox(height: 60), // <-- Kasih Jarak Tinggi : 50px
+                const SizedBox(height: 60), // <-- Kasih Jarak Tinggi
                 Center(
                   child: Form(
                     key: _fbKey,
@@ -96,9 +109,7 @@ class _LoginState extends State<Login> {
                                 //labelStyle: TextStyle(color: Color.fromARGB(255, 255, 147, 75)),
                                 labelText: "Email"),
                           ),
-                          const SizedBox(
-                            height: 20,
-                          ),
+                          const SizedBox(height: 20),
                           FormBuilderTextField(
                             obscureText:
                                 true, // <-- Buat bikin setiap inputan jadi bintang " * "
@@ -138,8 +149,7 @@ class _LoginState extends State<Login> {
                               ],
                             ),
                           ),
-                          const SizedBox(
-                            height: 40,
+                          const SizedBox(height: 40,
                           ),
                           SizedBox(
                             width: MediaQuery.of(context).size.width /3.2,
@@ -182,18 +192,21 @@ class _LoginState extends State<Login> {
                                 
                             
                                 child: const Text("Sign In",
-                                style: TextStyle(fontWeight: FontWeight.bold,fontSize: 20,height: 2.2,color: Color.fromARGB(255, 255, 249, 248))),
-                          )),
+                                style: TextStyle(fontWeight: FontWeight.bold,fontSize: 20,height: 2.2)),
+                          )
+                          ),
                         ],
                       ),
                     ),
                   ),
-                )
+                ),
+                
               ],
             ),
           ),
         ),
       ),
     ));
-  }
+  });
+}
 }

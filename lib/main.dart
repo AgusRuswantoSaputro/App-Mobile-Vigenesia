@@ -1,49 +1,31 @@
 import 'package:flutter/material.dart';
-import 'package:portal/Screens/Login.dart';
+import 'Screens/Register.dart';
+import 'Screens/Login.dart';
+import 'package:provider/provider.dart';
 import 'Screens/MainScreens.dart';
+import '/../Constant/const.dart';
+import 'Screens/EditPage.dart';
 
-class GlobalThemData {
-  static final Color _lightFocusColor = Colors.black.withOpacity(0.12);
-  static final Color _darkFocusColor = Colors.white.withOpacity(0.12);
+void main() {
+  runApp(ChangeNotifierProvider(create: (_) =>ThemeNotifier(),
+  child: const MyApp())
+    );
+}
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
 
-static ThemeData lightThemeData =
-      themeData(lightColorScheme, _lightFocusColor);
-  static ThemeData darkThemeData = themeData(darkColorScheme, _darkFocusColor);
-  static ThemeData themeData(ColorScheme colorScheme, Color focusColor) {
-    return ThemeData(
-      colorScheme: colorScheme,
-      canvasColor: colorScheme.surface,
-      scaffoldBackgroundColor: colorScheme.surface,
-      highlightColor: Colors.transparent,
-      focusColor: focusColor
+  @override
+  Widget build(BuildContext context) {
+    return Consumer<ThemeNotifier>(
+      builder: (context, themeNotifier, child) {
+        return MaterialApp(
+          debugShowCheckedModeBanner: false,
+          theme: lightTheme,
+          darkTheme: darkTheme,
+          themeMode: themeNotifier.themeMode,
+          home: const MainScreens(),
+        );
+      },
     );
   }
-  static const ColorScheme lightColorScheme = ColorScheme(
-    primary: Color.fromRGBO(255, 203, 59, 1),
-    onPrimary: Color.fromARGB(255, 255, 0, 0),
-    secondary: Color.fromARGB(255, 255, 56, 30),
-    onSecondary: Color.fromARGB(255, 255, 255, 255),
-    error: Color.fromARGB(255, 255, 117, 82),
-    onError: Color.fromARGB(255, 255, 0, 0),
-    surface: Color.fromARGB(255, 255, 249, 248),
-    onSurface: Color.fromARGB(255, 255, 89, 24),
-    brightness: Brightness.light,
-  );
-  static const ColorScheme darkColorScheme = ColorScheme(
-    primary: Color.fromRGBO(255, 203, 59, 1),
-    secondary: Color.fromARGB(255, 255, 56, 30),
-    surface: Color.fromARGB(255, 14, 13, 13),
-    error: Color.fromARGB(255, 255, 117, 82),
-    onError: Color.fromARGB(255, 255, 0, 0),
-    onPrimary: Colors.white,
-    onSecondary: Colors.white,
-    onSurface: Color.fromARGB(255, 255, 89, 24),
-    brightness: Brightness.dark,
-  );
 }
-
-void main() => runApp(const MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: Login(),
-    ));
-

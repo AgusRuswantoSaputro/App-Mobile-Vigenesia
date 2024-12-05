@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import '/../Constant/const.dart';
+import 'package:provider/provider.dart';
 import 'package:another_flushbar/flushbar.dart';
 import 'package:dio/dio.dart';
 import '/main.dart';
@@ -38,17 +39,26 @@ class _EditPageState extends State<EditPage> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      themeMode: ThemeMode.light,
-      theme: GlobalThemData.lightThemeData,
-      darkTheme: GlobalThemData.darkThemeData,
+    return Consumer<ThemeNotifier>(
+      builder: (context, themeNotifier, child) {
+        return MaterialApp(
+        debugShowCheckedModeBanner: false,
+        theme: lightTheme,
+        darkTheme: darkTheme,
+        themeMode: themeNotifier.themeMode,
       home: Scaffold(
       appBar: AppBar(
-        title: const Text("Edit"),
+        backgroundColor: const Color.fromARGB(0, 0, 0, 0),
+        title: const Text("Edit Motivasi"),
+        leadingWidth: 80,
+        toolbarHeight: 80,
+        leading: IconButton(
+            icon: const Icon(Icons.arrow_back),
+            onPressed: () {Navigator.pop(context);
+        },),
       ),
       body: SafeArea(
-          child: Container(
+        child: Container(
         child: SizedBox(
           width: MediaQuery.of(context).size.width,
           child: Center(
@@ -59,18 +69,18 @@ class _EditPageState extends State<EditPage> {
                 const SizedBox(height: 20,
                 ),
                 SizedBox(
-                  width: MediaQuery.of(context).size.width / 1.4,
+                  width: MediaQuery.of(context).size.width / 1.5,
                   child: FormBuilderTextField(
                     name: "isi_motivasi",
                     controller: isiMotivasiC,
                     decoration: const InputDecoration(
-                      labelText: "Motivasi Baru",
-                     border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
-                      contentPadding: EdgeInsets.only(left: 10),
+                    labelText: "Ubah Motivasi",
+                    border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
+                    contentPadding: EdgeInsets.only(left: 10),
                     ),
                   ),
                 ),
-                SizedBox(height: 30),
+                const SizedBox(height: 30),
                 FilledButton.tonal(
                     onPressed: () {
                       putPost(isiMotivasiC.text, widget.id.toString())
@@ -88,12 +98,13 @@ class _EditPageState extends State<EditPage> {
                               });
                     },
                     child: const Text("Submit",
-                    style: TextStyle(fontWeight: FontWeight.bold,fontSize: 20,height: 2.2,color: Color.fromARGB(255, 255, 249, 248)))),
+                    style: TextStyle(fontWeight: FontWeight.bold,fontSize: 20,height: 2.2))),
               ],
             ),
           ),
         ),
       )),
     ));
-  }
+  });
+}
 }
