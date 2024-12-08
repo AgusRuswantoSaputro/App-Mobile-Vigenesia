@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
-import 'Screens/Register.dart';
-import 'Screens/Login.dart';
 import 'package:provider/provider.dart';
 import 'Screens/MainScreens.dart';
+import 'Screens/Login.dart';
 import '/../Constant/const.dart';
-import 'Screens/EditPage.dart';
 
 void main() {
   runApp(ChangeNotifierProvider(create: (_) =>ThemeNotifier(),
@@ -23,7 +21,7 @@ class MyApp extends StatelessWidget {
           theme: lightTheme,
           darkTheme: darkTheme,
           themeMode: themeNotifier.themeMode,
-          home: const MainScreens(),
+          home: Login(),
         );
       },
     );

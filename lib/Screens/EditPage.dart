@@ -4,7 +4,6 @@ import '/../Constant/const.dart';
 import 'package:provider/provider.dart';
 import 'package:another_flushbar/flushbar.dart';
 import 'package:dio/dio.dart';
-import '/main.dart';
 
 
 
@@ -17,7 +16,7 @@ class EditPage extends StatefulWidget {
   _EditPageState createState() => _EditPageState();
 }
 
-class _EditPageState extends State<EditPage> {
+class _EditPageState extends State<EditPage>with SingleTickerProviderStateMixin {
   String baseurl = url;
       //"http://localhost:8000"; // ganti dengan ip address kamu / tempat kamu menyimpan backend
 
@@ -36,7 +35,19 @@ class _EditPageState extends State<EditPage> {
   }
 
   TextEditingController isiMotivasiC = TextEditingController();
+  late final TabController _tabController;
 
+@override
+  void initState() {
+    _tabController = TabController(length: 2, vsync: this);
+    super.initState();
+  }
+
+    @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
+  }
   @override
   Widget build(BuildContext context) {
     return Consumer<ThemeNotifier>(
@@ -89,9 +100,9 @@ class _EditPageState extends State<EditPage> {
                                   {
                                     Navigator.pop(context),
                                     Flushbar(
-                                      message: "Berhasil Update & Refresh dlu",
+                                      message: "Berhasil Update & Refresh klik Global atau User",
                                       duration: const Duration(seconds: 5),
-                                      backgroundColor: Colors.green,
+                                      backgroundColor: Colors.greenAccent,
                                       flushbarPosition: FlushbarPosition.TOP,
                                     ).show(context)
                                   }
